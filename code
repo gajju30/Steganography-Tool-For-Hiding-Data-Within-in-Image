@@ -1,0 +1,130 @@
+from tkinter import *
+from tkinter import filedialog
+import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk 
+import os
+from stegano import lsb
+from tkinter import PhotoImage
+
+win= Tk()
+win.title('Steganography Tool')
+win.geometry('700x580')
+win.config(bg='#2f4155')
+#Button Fincation
+def open_img():
+    global open_file
+    password=code.get()
+    if password=='7620':
+        open_file=filedialog.askopenfilename(initialdir=os.getcwd(),
+                                         title='Select Image Type',
+                                         filetypes=(('PNG file','*.png'),('JPG file','*.jpg'),('All file','*.txt')))
+        img=Image.open(open_file)
+        img=ImageTk.PhotoImage(img)
+        lf1.configure(image=img)
+        lf1.image=img
+        lf1.configure(image=img,width=320,height=280)
+    elif password=='':
+        
+        messagebox.showerror('Error','Enter Key')
+    
+    else:
+        messagebox.showerror('Error','Wrong Secret Key')
+        code.set('')
+    
+def hide():
+    global hide_msg
+    password=code.get()
+    if password=='7620':
+        
+        msg=text1.get(1.0,END)
+        hide_msg=lsb.hide(str(open_file),msg)
+        messagebox.showinfo('Success','Your message is successfully hidden in a image, please save your image')
+    elif password=='':
+        messagebox.showerror('Error','Enter Key')
+    else:
+        messagebox.showerror('Error','Wrong Secret Key')
+        code.set('')
+        
+        
+    
+def save_img():
+    password=code.get()
+    if password=='7620':
+        hide_msg.save('Secret.png')
+        messagebox.showinfo('Saved','Image saved')
+    elif password=='':
+        messagebox.showerror('Error','Enter Key')
+    else:
+        messagebox.showerror('Error','Wrong Secret Key')
+        code.set('')
+def show():
+    password=code.get()
+    if password=='7620':
+        show_msg=lsb.reveal(open_file)
+        text1.delete(1.0,END)
+        text1.insert(END,show_msg)
+    elif password=='':
+        messagebox.showerror('Error','Enter Key')
+    else:
+        messagebox.showerror('Error','Wrong Secret Key')
+        code.set('')
+#icon
+
+image_icon=PhotoImage(file='download.png.')
+win.iconphoto(False,image_icon)
+#Logo
+logo=PhotoImage(file='logo.png')
+Label(win,image=logo,bg='#2f4155').place(x=10,y=0)
+Label(win,text='Cyber Security',font='impack 30 bold',bg='#2f4155',fg='white').place(x=85,y=17)
+#Frame 1
+f1=Frame(win,width=320,height=280,bd=5,bg='black',relief=GROOVE)
+f1.place(x=10,y=80)
+lf1=Label(f1,bg='black')
+lf1.place(x=0,y=0)
+
+#Frame2
+frame2=Frame(win,bd=3,width=340,height=280,bg='white',relief=GROOVE)
+frame2.place(x=350,y=80)
+
+text1=Text(frame2,font='robote 20',bg='white',fg='black',relief=GROOVE,wrap=WORD)
+text1.place(x=0,y=0,width=320,height=295)
+
+scrollbar1=Scrollbar(frame2)
+scrollbar1.place(x=320,y=0,height=300)
+
+scrollbar1.configure(command=text1.yview)
+text1.configure(yscrollcommand=scrollbar1.set)
+
+
+
+#Label for Secret Key
+Label(win,text='Enter Secret Key',font='impack 12 bold',bg='#2f4155',fg='white').place(x=275,y=375)
+
+
+
+#Entry secret key
+code=StringVar()
+e=Entry(win,textvariable=code, bd=2,font='inpact 9 bold',show='*')
+e.place(x=270,y=410)
+
+
+#Button
+open_button=Button(win,text='Open Image',bg='blue',fg='white',font='ariel 12 bold',cursor='hand2',command=open_img)
+open_button.place(x=15,y=470)
+
+save_button=Button(win,text='Save Image',bg='green',fg='white',font='ariel 12 bold',cursor='hand2',command=save_img)
+save_button.place(x=160,y=470)
+
+
+hide_button=Button(win,text='Hide Data',bg='red',fg='white',font='ariel 12 bold',cursor='hand2',command=hide)
+hide_button.place(x=425,y=470)
+
+
+show_button=Button(win,text='Show Data',bg='orange',fg='white',font='ariel 12 bold',cursor='hand2',command=show)
+show_button.place(x=570,y=470)
+
+
+
+mainloop()
+
